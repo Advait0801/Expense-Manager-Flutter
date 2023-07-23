@@ -1,5 +1,7 @@
+import 'package:expense_manager/data/expense_data.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_manager/home_page.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const ExpenseManager());
 
@@ -8,15 +10,17 @@ class ExpenseManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: AppBarTheme(color: Colors.blue[900])
-      ),
-      home: HomePage(),
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => ExpenseData(),
+      builder: (context,child) => MaterialApp(
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: AppBarTheme(color: Colors.blue[900]),
+        ),
+        home: HomePage(),
+      )
     );
   }
 }
-
 
 

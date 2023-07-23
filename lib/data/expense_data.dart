@@ -1,7 +1,8 @@
 import 'package:expense_manager/models/expense_item.dart';
 import 'package:expense_manager/date_converter.dart';
+import 'package:flutter/foundation.dart';
 
-class ExpenseData{
+class ExpenseData extends ChangeNotifier{
   List<ExpenseItem> expenseList = [];
 
   List<ExpenseItem> getExpenseList(){
@@ -10,10 +11,12 @@ class ExpenseData{
 
   void addExpense(ExpenseItem newExpenseItem){
     expenseList.add(newExpenseItem);
+    notifyListeners();
   }
 
   void removeExpense(ExpenseItem expenseItem){
     expenseList.remove(expenseItem);
+    notifyListeners();
   }
 
   String getDayName(DateTime dateTimeObject){

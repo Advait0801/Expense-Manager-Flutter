@@ -1,4 +1,7 @@
+import 'package:expense_manager/data/expense_data.dart';
+import 'package:expense_manager/models/expense_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -139,22 +142,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   void save(bool value){
-
+    ExpenseItem newItem = ExpenseItem(
+      name: textNameController.text,
+      amount: value ? textAmountController.text : '-${textAmountController.text}',
+      dateTime: DateTime.now()
+    );
+    Provider.of<ExpenseData>(context, listen: false).addExpense(newItem);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Expense Manager',
-            style: TextStyle(
-              fontSize: 25.0,
-              fontWeight: FontWeight.bold
+          title: const Center(
+            child: Text(
+              'Expense Manager',
+              style: TextStyle(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold
+              ),
             ),
-          ),
-        )
+          )
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
@@ -165,7 +174,31 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blue[900],
         onPressed: addExpense,
       ),
-
+      body: Consumer<ExpenseData>(
+        builder: (context , expenseData , child) {
+          return ListView.builder(
+            itemCount: expenseData.getExpenseList().length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(
+                  expenseData.getExpenseList()[index].name,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0,
+                  ),
+                ),
+                subtitle: Text(
+                  expenseData.getExpenseList()[index].amount,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0
+                  )
+                ),
+              );
+            },
+          );
+        },
+      )
     );
   }
 }
