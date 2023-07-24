@@ -2,6 +2,7 @@ import 'package:expense_manager/data/expense_data.dart';
 import 'package:expense_manager/models/expense_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'widgets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -144,11 +145,13 @@ class _HomePageState extends State<HomePage> {
   void save(bool value){
     ExpenseItem newItem = ExpenseItem(
       name: textNameController.text,
-      amount: value ? textAmountController.text : '-${textAmountController.text}',
+      amount: value ? '-${textAmountController.text}' : textAmountController.text,
       dateTime: DateTime.now()
     );
     Provider.of<ExpenseData>(context, listen: false).addExpense(newItem);
     Navigator.pop(context);
+    textNameController.clear();
+    textAmountController.clear();
   }
 
   @override
@@ -176,26 +179,21 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Consumer<ExpenseData>(
         builder: (context , expenseData , child) {
-          return ListView.builder(
-            itemCount: expenseData.getExpenseList().length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  expenseData.getExpenseList()[index].name,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                  ),
-                ),
-                subtitle: Text(
-                  expenseData.getExpenseList()[index].amount,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0
-                  )
-                ),
-              );
-            },
+          return ListView(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: expenseData.getExpenseList().length,
+                itemBuilder: (context, index) {
+                  return ExpenseTile(
+                    name: expenseData.getExpenseList()[index].name,
+                    amount: expenseData.getExpenseList()[index].amount,
+                    dateTime: expenseData.getExpenseList()[index].dateTime,
+                  );
+                },
+              )
+            ],
           );
         },
       )
