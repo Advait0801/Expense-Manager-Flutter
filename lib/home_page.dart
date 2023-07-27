@@ -181,6 +181,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context , expenseData , child) {
           return ListView(
             children: [
+              ExpenseSummary(startOfWeek: expenseData.getStartWeekDate()),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

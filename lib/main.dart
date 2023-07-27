@@ -13,7 +13,7 @@ class ExpenseManager extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (BuildContext context) => ExpenseData(),
       builder: (context,child) => MaterialApp(
-        theme: ThemeData.dark().copyWith(
+        theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: AppBarTheme(color: Colors.blue[900]),
         ),

@@ -40,7 +40,7 @@ class ExpenseData extends ChangeNotifier{
     }
   }
 
-  DateTime? getStartWeekDate(){
+  DateTime getStartWeekDate(){
     DateTime? start;
     DateTime today = DateTime.now();
     for(int i=0;i<7;i++){
