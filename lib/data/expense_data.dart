@@ -1,22 +1,32 @@
+import 'package:expense_manager/data/hive_database.dart';
 import 'package:expense_manager/models/expense_item.dart';
 import 'package:expense_manager/date_converter.dart';
 import 'package:flutter/foundation.dart';
 
 class ExpenseData extends ChangeNotifier{
   List<ExpenseItem> expenseList = [];
+  final db = HiveDataBase();
 
   List<ExpenseItem> getExpenseList(){
     return expenseList;
   }
 
+  void prepareData(){
+    if(db.read().isNotEmpty){
+      expenseList = db.read();
+    }
+  }
+
   void addExpense(ExpenseItem newExpenseItem){
     expenseList.add(newExpenseItem);
     notifyListeners();
+    db.save(expenseList);
   }
 
   void removeExpense(ExpenseItem expenseItem){
     expenseList.remove(expenseItem);
     notifyListeners();
+    db.save(expenseList);
   }
 
   String getDayName(DateTime dateTimeObject){

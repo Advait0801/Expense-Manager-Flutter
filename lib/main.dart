@@ -2,8 +2,13 @@ import 'package:expense_manager/data/expense_data.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_manager/home_page.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() => runApp(const ExpenseManager());
+void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox("expense_database");
+  runApp(const ExpenseManager());
+}
 
 class ExpenseManager extends StatelessWidget {
   const ExpenseManager({super.key});

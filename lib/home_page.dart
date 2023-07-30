@@ -15,45 +15,13 @@ class _HomePageState extends State<HomePage> {
   final textNameController = TextEditingController();
   final textAmountController = TextEditingController();
 
-  void addExpense(){
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Income or Expense?',
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w500
-          ),
-        ),
-        actions: [
-          MaterialButton(
-            onPressed: addIncome,
-            child: Text(
-              'Add Income',
-              style: TextStyle(
-                fontSize: 18.0
-              ),
-            ),
-
-          ),
-          MaterialButton(
-            onPressed: addExpenditure,
-            child: Text(
-              'Add Expense',
-              style: TextStyle(
-                  fontSize: 18.0
-              ),
-            ),
-          )
-        ],
-      ),
-
-    );
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ExpenseData>(context, listen: false).prepareData();
   }
 
   void addExpenditure(){
-    Navigator.pop(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -69,6 +37,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             TextField(
               controller: textNameController,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 hintText: 'Enter expense name',
               ),
@@ -76,6 +45,7 @@ class _HomePageState extends State<HomePage> {
             ),
             TextField(
               controller: textAmountController,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Enter expense amount',
               ),
@@ -90,65 +60,26 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 18.0
               ),
             ),
-            onPressed: (){save(true);}
+            onPressed: (){save();}
           )
         ],
       )
     );
   }
 
-  void addIncome(){
-    Navigator.pop(context);
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            'Enter Income Details',
-            style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w500
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: textNameController,
-                decoration: InputDecoration(
-                  hintText: 'Enter income name',
-                ),
-
-              ),
-              TextField(
-                controller: textAmountController,
-                decoration: InputDecoration(
-                  hintText: 'Enter income amount',
-                ),
-              )
-            ],
-          ),
-          actions: [
-            MaterialButton(
-                child: Text(
-                  'Add Income',
-                  style: TextStyle(
-                      fontSize: 18.0
-                  ),
-                ),
-                onPressed: (){save(false);}
-            )
-          ],
-        )
-    );
+  void delete(ExpenseItem expenseItem){
+    Provider.of<ExpenseData>(context, listen: false).removeExpense(expenseItem);
   }
 
-  void save(bool value){
-    ExpenseItem newItem = ExpenseItem(
-      name: textNameController.text,
-      amount: value ? '-${textAmountController.text}' : textAmountController.text,
-      dateTime: DateTime.now()
-    );
-    Provider.of<ExpenseData>(context, listen: false).addExpense(newItem);
+  void save(){
+    if(textAmountController.text.isNotEmpty && textNameController.text.isNotEmpty){
+      ExpenseItem newItem = ExpenseItem(
+          name: textNameController.text,
+          amount: textAmountController.text,
+          dateTime: DateTime.now()
+      );
+      Provider.of<ExpenseData>(context, listen: false).addExpense(newItem);
+    }
     Navigator.pop(context);
     textNameController.clear();
     textAmountController.clear();
@@ -175,13 +106,14 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
         backgroundColor: Colors.blue[900],
-        onPressed: addExpense,
+        onPressed: addExpenditure,
       ),
       body: Consumer<ExpenseData>(
         builder: (context , expenseData , child) {
           return ListView(
             children: [
               ExpenseSummary(startOfWeek: expenseData.getStartWeekDate()),
+              SizedBox(height: 10),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -191,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                     name: expenseData.getExpenseList()[index].name,
                     amount: expenseData.getExpenseList()[index].amount,
                     dateTime: expenseData.getExpenseList()[index].dateTime,
+                    deleteTapped: (p0) => delete(expenseData.getExpenseList()[index]),
                   );
                 },
               )

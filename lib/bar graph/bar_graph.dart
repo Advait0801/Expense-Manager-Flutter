@@ -44,7 +44,7 @@ class MyBarGraph extends StatelessWidget {
         topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
+        bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true,getTitlesWidget: getBottomTitles)),
 
       ),
       borderData: FlBorderData(show: false),
@@ -54,7 +54,7 @@ class MyBarGraph extends StatelessWidget {
           barRods: [
             BarChartRodData(
               toY: data.y,
-              color: Colors.grey[800],
+              color: Colors.blue,
               width: 25,
               borderRadius: BorderRadius.circular(4),
               backDrawRodData: BackgroundBarChartRodData(
@@ -66,5 +66,42 @@ class MyBarGraph extends StatelessWidget {
           ]
       )).toList()
     ));
+  }
+
+  Widget getBottomTitles(double value,TitleMeta meta){
+    const style = TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 14
+    );
+    
+    Widget text;
+    switch(value.toInt()){
+      case 0:
+        text = const Text('Sun',style: style);
+        break;
+      case 1:
+        text = const Text('Mon',style: style);
+        break;
+      case 2:
+        text = const Text('Tues',style: style);
+        break;
+      case 3:
+        text = const Text('Wed',style: style);
+        break;
+      case 4:
+        text = const Text('Thurs',style: style);
+        break;
+      case 5:
+        text = const Text('Fri',style: style);
+        break;
+      case 6:
+        text = const Text('Sat',style: style);
+        break;
+      default:
+        text = const Text('',style: style);
+        break;
+    }
+    return SideTitleWidget(child: text, axisSide: meta.axisSide);
   }
 }
